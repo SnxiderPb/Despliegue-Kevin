@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1. Proyecto Básico | Despliegue Kevin</title>
+  <link rel="stylesheet" href="Styles.Css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.Html" class="brand">Despliegue Kevin</a>
+      <nav class="nav-menu">
+        <a href="index.Html">Inicio</a>
+        <a href="Basico.Html" class="active">1. Proyecto Básico</a>
+        <a href="Ramas.Html">2. Ramas y CI/CD</a>
+        <a href="Frameworks.Html">3. Frameworks &amp; .env</a>
+        <a href="Dominios.Html">4. Dominios y Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="content-panel">
+      <span class="badge">Módulo 01 • Referencia [00:01:30]</span>
+      <h1>Despliegue de un Proyecto Básico (HTML, CSS y JS)</h1>
+      <p>Si tienes una página web estática (por ejemplo, una carpeta <code>src</code> con <code>index.html</code>, <code>styles.css</code> y <code>script.js</code>), sigue estos dos pasos para publicarla en internet.</p>
+
+      <div class="grid-2">
+        <div class="box">
+          <h3>Paso A: Subir el proyecto a GitHub</h3>
+          <ol>
+            <li>Crea una cuenta en <strong>github.com</strong> y haz clic en <strong>New Repository</strong>.</li>
+            <li>Asígnale un nombre, déjalo como <em>Público</em> o <em>Privado</em> y créalo.</li>
+            <li>Abre la terminal en Visual Studio Code dentro de la carpeta de tu proyecto y ejecuta:</li>
+          </ol>
+          <pre><code>git init
+git add .
+git commit -m "First commit"
+git branch -M main
+git remote add origin https://github.com/tu-usuario/tu-repo.git
+git push -u origin main</code></pre>
+          <div class="note">
+            <strong>Alternativa visual:</strong> Si prefieres no usar comandos, instala <em>GitHub Desktop</em>, inicia sesión, agrega tu carpeta local (<em>Add Existing Repository</em>), escribe un mensaje de commit y presiona <strong>Push origin</strong>.
+          </div>
+        </div>
+
+        <div class="box">
+          <h3>Paso B: Conectar y Desplegar en Vercel</h3>
+          <ol>
+            <li>Entra a <strong>vercel.com</strong> e inicia sesión directamente con tu cuenta de GitHub.</li>
+            <li>Haz clic en <strong>Add New &gt; Project</strong> y selecciona <strong>Import</strong> junto a tu repositorio.</li>
+            <li>En <em>Framework Preset</em>, deja la opción <strong>Other</strong> (al ser HTML/CSS/JS puro).</li>
+            <li><strong>Importante:</strong> Si tu <code>index.html</code> no está en la raíz sino dentro de una carpeta (ej. <code>src</code>), edita el campo <strong>Root Directory</strong> y selecciona esa carpeta.</li>
+            <li>Haz clic en <strong>Deploy</strong>. En segundos obtendrás tu enlace público <code>.vercel.app</code>.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="page-pagination">
+        <a href="index.Html" class="btn-secondary">← Volver al Inicio</a>
+        <a href="Ramas.Html" class="btn-primary">Siguiente: Ramas y CI/CD →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Despliegue Kevin</strong> • Guía interactiva de GitHub y Vercel</p>
+    </div>
+  </footer>
+
+  <script src="Scripts.Js"></script>
+</body>
+</html>

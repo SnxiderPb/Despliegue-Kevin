@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3. Frameworks y .env | Despliegue Kevin</title>
+  <link rel="stylesheet" href="Styles.Css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.Html" class="brand">Despliegue Kevin</a>
+      <nav class="nav-menu">
+        <a href="index.Html">Inicio</a>
+        <a href="Basico.Html">1. Proyecto Básico</a>
+        <a href="Ramas.Html">2. Ramas y CI/CD</a>
+        <a href="Frameworks.Html" class="active">3. Frameworks &amp; .env</a>
+        <a href="Dominios.Html">4. Dominios y Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="content-panel">
+      <span class="badge">Módulo 03 • Referencia [00:11:35]</span>
+      <h1>Proyectos con Frameworks y Variables de Entorno</h1>
+      <p>Cuando importas un proyecto desarrollado con <strong>Next.js, React (Vite), Vue, Angular o Astro</strong>, Vercel detecta el framework automáticamente y configura los comandos de compilación.</p>
+
+      <div class="box" style="margin-top: 20px;">
+        <h3>Configurar Variables de Entorno (Environment Variables)</h3>
+        <p>Por seguridad, el archivo local <code>.env</code> está ignorado en Git (<code>.gitignore</code>) y nunca debe subirse a GitHub. Para que tu aplicación funcione en Vercel:</p>
+        <ol>
+          <li>En la pantalla de configuración previa al despliegue en Vercel, despliega la sección <strong>Environment Variables</strong>.</li>
+          <li>Abre tu archivo <code>.env</code> local, copia todas las líneas (claves de API, URLs de bases de datos, secretos) y pégalas en el primer campo de Vercel; la plataforma separará automáticamente los nombres y valores.</li>
+          <li>Presiona <strong>Deploy</strong> para iniciar el proceso de compilación (<em>Build</em>).</li>
+        </ol>
+      </div>
+
+      <div class="warning-box">
+        <h3>¿Qué hacer si falla el Build?</h3>
+        <p>Vercel ejecuta una compilación estricta antes de publicar. Si tienes errores de tipado en TypeScript o importaciones rotas, el despliegue se detendrá y te mostrará la ruta exacta y el número de línea del fallo en los logs. Corrige el error en tu editor, haz <code>commit</code> y <code>push</code> a <code>main</code> para que Vercel intente desplegar nuevamente.</p>
+      </div>
+
+      <div class="page-pagination">
+        <a href="Ramas.Html" class="btn-secondary">← Anterior: Ramas y CI/CD</a>
+        <a href="Dominios.Html" class="btn-primary">Siguiente: Dominios y Analytics →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Despliegue Kevin</strong> • Guía interactiva de GitHub y Vercel</p>
+    </div>
+  </footer>
+
+  <script src="Scripts.Js"></script>
+</body>
+</html>

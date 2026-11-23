@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2. Ramas y CI/CD | Despliegue Kevin</title>
+  <link rel="stylesheet" href="Styles.Css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.Html" class="brand">Despliegue Kevin</a>
+      <nav class="nav-menu">
+        <a href="index.Html">Inicio</a>
+        <a href="Basico.Html">1. Proyecto Básico</a>
+        <a href="Ramas.Html" class="active">2. Ramas y CI/CD</a>
+        <a href="Frameworks.Html">3. Frameworks &amp; .env</a>
+        <a href="Dominios.Html">4. Dominios y Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="content-panel">
+      <span class="badge">Módulo 02 • Referencia [00:07:53]</span>
+      <h1>Despliegue Automatizado con Ramas y Pull Requests</h1>
+      <p>Una de las mayores ventajas de conectar GitHub con Vercel es el despliegue continuo: Vercel vigila tu rama principal (<code>main</code>) y actualiza tu web en vivo cada vez que recibe código nuevo.</p>
+
+      <div class="flow-container">
+        <div class="flow-card">
+          <span class="flow-num">1</span>
+          <h3>Crear una Rama Secundaria</h3>
+          <p>En lugar de editar directamente sobre <code>main</code>, crea una rama nueva (ej. <code>rama-ejemplo</code>). Haz tus modificaciones en el código, guarda un commit y publícala en GitHub. Tu sitio en producción seguirá intacto.</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-num">2</span>
+          <h3>Abrir un Pull Request (PR)</h3>
+          <p>Entra a tu repositorio en GitHub, ve a la pestaña <strong>Pull Requests</strong> y crea una solicitud para comparar y llevar los cambios desde <code>rama-ejemplo</code> hacia <code>main</code>.</p>
+        </div>
+
+        <div class="flow-card">
+          <span class="flow-num">3</span>
+          <h3>Merge y Re-despliegue Automático</h3>
+          <p>Revisa los cambios y haz clic en <strong>Merge pull request</strong>. Al instante, Vercel detectará la actualización en <code>main</code>, ejecutará un nuevo build y actualizará tu página pública con la etiqueta <em>Current</em>.</p>
+        </div>
+      </div>
+
+      <div class="page-pagination">
+        <a href="Basico.Html" class="btn-secondary">← Anterior: Proyecto Básico</a>
+        <a href="Frameworks.Html" class="btn-primary">Siguiente: Frameworks &amp; .env →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Despliegue Kevin</strong> • Guía interactiva de GitHub y Vercel</p>
+    </div>
+  </footer>
+
+  <script src="Scripts.Js"></script>
+</body>
+</html>

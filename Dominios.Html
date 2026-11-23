@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4. Dominios y Analytics | Despliegue Kevin</title>
+  <link rel="stylesheet" href="Styles.Css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.Html" class="brand">Despliegue Kevin</a>
+      <nav class="nav-menu">
+        <a href="index.Html">Inicio</a>
+        <a href="Basico.Html">1. Proyecto Básico</a>
+        <a href="Ramas.Html">2. Ramas y CI/CD</a>
+        <a href="Frameworks.Html">3. Frameworks &amp; .env</a>
+        <a href="Dominios.Html" class="active">4. Dominios y Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="content-panel">
+      <span class="badge">Módulo 04 • Referencia [00:16:27]</span>
+      <h1>Dominios Personalizados, Subdominios y Analytics</h1>
+
+      <div class="box" style="margin-top: 20px;">
+        <h3>1. Conectar un Dominio Propio y Subdominios</h3>
+        <p>Ve a tu proyecto en Vercel &gt; <strong>Settings &gt; Domains</strong>, escribe tu dominio (ej. <code>midominio.com</code>) y agrega los siguientes registros en la configuración <strong>DNS</strong> de tu proveedor (Squarespace, GoDaddy, Namecheap, etc.):</p>
+
+        <table class="dns-table">
+          <thead>
+            <tr>
+              <th>Uso</th>
+              <th>Tipo</th>
+              <th>Nombre / Host</th>
+              <th>Valor / Apunta a</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dominio raíz (<code>midominio.com</code>)</td>
+              <td><span class="tag">A</span></td>
+              <td><code>@</code></td>
+              <td><code>76.76.21.21</code> (IP indicada por Vercel)</td>
+            </tr>
+            <tr>
+              <td>Versión con WWW (<code>www.midominio.com</code>)</td>
+              <td><span class="tag">CNAME</span></td>
+              <td><code>www</code></td>
+              <td><code>cname.vercel-dns.com</code></td>
+            </tr>
+            <tr>
+              <td>Subdominio (ej. <code>blog.midominio.com</code>)</td>
+              <td><span class="tag">A</span> / <span class="tag">CNAME</span></td>
+              <td><code>blog</code></td>
+              <td>Se asigna desde la pestaña <em>Domains</em> de Vercel</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box" style="margin-top: 24px;">
+        <h3>2. Activar Vercel Analytics (Gratis)</h3>
+        <p>Para medir visitantes únicos, vistas de página (<em>Page Views</em>) y origen del tráfico (<em>Referrers</em>):</p>
+        <ol>
+          <li>En tu proyecto de Vercel, abre la pestaña <strong>Analytics</strong> y haz clic en <strong>Enable</strong> (plan gratuito).</li>
+          <li>Instala la librería en tu proyecto local:
+            <pre><code>npm i @vercel/analytics</code></pre>
+          </li>
+          <li>Importa el componente en tu archivo principal (ejemplo en Next.js <code>app/layout.js</code>) y súbelo a GitHub:
+            <pre><code>import { Analytics } from '@vercel/analytics/next';
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang="es"&gt;
+      &lt;body&gt;
+        {children}
+        &lt;Analytics /&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+          </li>
+        </ol>
+      </div>
+
+      <div class="page-pagination">
+        <a href="Frameworks.Html" class="btn-secondary">← Anterior: Frameworks &amp; .env</a>
+        <a href="index.Html" class="btn-primary">Finalizar y volver al Inicio</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Despliegue Kevin</strong> • Guía interactiva de GitHub y Vercel</p>
+    </div>
+  </footer>
+
+  <script src="Scripts.Js"></script>
+</body>
+</html>

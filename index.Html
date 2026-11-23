@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Despliegue Kevin | Guía Git y Vercel</title>
+  <link rel="stylesheet" href="Styles.Css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.Html" class="brand">Despliegue Kevin</a>
+      <nav class="nav-menu">
+        <a href="index.Html" class="active">Inicio</a>
+        <a href="Basico.Html">1. Proyecto Básico</a>
+        <a href="Ramas.Html">2. Ramas y CI/CD</a>
+        <a href="Frameworks.Html">3. Frameworks &amp; .env</a>
+        <a href="Dominios.Html">4. Dominios y Analytics</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero-box">
+      <span class="badge">Guía de Despliegue Web</span>
+      <h1>Publica tus proyectos gratis con GitHub y Vercel</h1>
+      <p>Explora cada sección desde la barra superior o selecciona un módulo para aprender el paso a paso completo basado en el tutorial de Condor Coders.</p>
+      <div class="hero-actions">
+        <a href="Basico.Html" class="btn-primary">Comenzar con el Paso 1 →</a>
+        <a href="http://www.youtube.com/watch?v=8pJXZqFKkX8" target="_blank" rel="noopener noreferrer" class="btn-secondary">Ver video en YouTube</a>
+      </div>
+    </section>
+
+    <section class="cards-grid">
+      <a href="Basico.Html" class="nav-card">
+        <span class="card-step">Módulo 01</span>
+        <h3>Proyecto Básico (HTML/CSS/JS)</h3>
+        <p>Sube tu código local a GitHub con terminal o GitHub Desktop e impórtalo en Vercel configurando el Root Directory.</p>
+      </a>
+
+      <a href="Ramas.Html" class="nav-card">
+        <span class="card-step">Módulo 02</span>
+        <h3>Ramas y Pull Requests</h3>
+        <p>Aprende cómo funciona la integración continua (CI/CD) al trabajar en ramas secundarias y fusionar hacia <code>main</code>.</p>
+      </a>
+
+      <a href="Frameworks.Html" class="nav-card">
+        <span class="card-step">Módulo 03</span>
+        <h3>Frameworks y Variables .env</h3>
+        <p>Despliega proyectos con Next.js, React o Vite, configura tus Secret Keys y soluciona errores en los logs de Build.</p>
+      </a>
+
+      <a href="Dominios.Html" class="nav-card">
+        <span class="card-step">Módulo 04</span>
+        <h3>Dominios, Subdominios y Analytics</h3>
+        <p>Conecta tu propio dominio mediante registros DNS (A y CNAME), crea subdominios y activa Vercel Analytics gratis.</p>
+      </a>
+    </section>
+
+    <section id="deploy-checklist" class="deploy-checklist" aria-live="polite"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Despliegue Kevin</strong> • Guía interactiva de GitHub y Vercel</p>
+    </div>
+  </footer>
+
+  <script src="ChecklistProgress.Js"></script>
+  <script src="Scripts.Js"></script>
+</body>
+</html>
