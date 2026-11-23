@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       payload = await response.json();
     } catch {
-      throw new Error("El servidor devolvió una respuesta que no se pudo leer.");
+      throw new Error("La API no respondió en JSON. Inicia el backend con Docker o configura su dominio en Vercel.");
     }
 
     if (!response.ok) {
