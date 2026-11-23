@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD de Proyectos | Despliegue Kevin</title>
+  <link rel="stylesheet" href="Styles.Css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.Html" class="brand">Despliegue Kevin</a>
+      <nav class="nav-menu">
+        <a href="index.Html">Inicio</a>
+        <a href="Basico.Html">1. Proyecto Básico</a>
+        <a href="Ramas.Html">2. Ramas y CI/CD</a>
+        <a href="Frameworks.Html">3. Frameworks &amp; .env</a>
+        <a href="Dominios.Html">4. Dominios y Analytics</a>
+        <a href="Proyectos.Html" class="active">5. CRUD Proyectos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero-box project-hero">
+      <span class="badge">API + PostgreSQL + Docker</span>
+      <h1>Mis proyectos de despliegue</h1>
+      <p>Inicia sesión para crear, consultar, actualizar y eliminar registros de tus proyectos.</p>
+    </section>
+
+    <section id="auth-panel" class="content-panel auth-panel" aria-labelledby="login-title">
+      <h2 id="login-title">Iniciar sesión</h2>
+      <p>Usa el correo y la contraseña de administrador configurados en el servidor.</p>
+      <form id="login-form" class="project-form">
+        <label for="login-email">Correo</label>
+        <input id="login-email" name="email" type="email" autocomplete="username" required>
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <button class="btn-primary" type="submit">Entrar</button>
+      </form>
+    </section>
+
+    <p id="project-feedback" class="project-feedback" role="status" aria-live="polite"></p>
+
+    <section id="projects-dashboard" class="content-panel projects-dashboard" aria-labelledby="projects-title" hidden>
+      <div class="projects-heading">
+        <div>
+          <h2 id="projects-title">Registros de proyectos</h2>
+          <p><span id="project-count">0</span> proyectos guardados</p>
+        </div>
+        <button id="logout-button" class="btn-secondary" type="button">Cerrar sesión</button>
+      </div>
+
+      <form id="project-form" class="project-form project-form-grid">
+        <input id="project-id" name="id" type="hidden">
+        <label for="project-name">Nombre del proyecto</label>
+        <input id="project-name" name="name" maxlength="120" required>
+        <label for="project-framework">Framework o tecnología</label>
+        <input id="project-framework" name="framework" maxlength="80" placeholder="Ej. HTML/CSS/JS, React o Vite" required>
+        <label for="project-url">URL publicada (opcional)</label>
+        <input id="project-url" name="url" type="url" maxlength="2048" placeholder="https://ejemplo.com">
+        <label for="project-status">Estado</label>
+        <select id="project-status" name="status" required>
+          <option value="planned">Planeado</option>
+          <option value="in_progress">En progreso</option>
+          <option value="deployed">Publicado</option>
+        </select>
+        <div class="project-form-actions">
+          <button id="save-project" class="btn-primary" type="submit">Guardar proyecto</button>
+          <button id="cancel-edit" class="btn-secondary" type="button" hidden>Cancelar edición</button>
+        </div>
+      </form>
+
+      <p id="empty-projects" class="empty-projects" hidden>Aún no hay registros. Crea tu primer proyecto con el formulario.</p>
+      <div class="table-wrapper">
+        <table class="projects-table">
+          <thead>
+            <tr>
+              <th scope="col">Proyecto</th>
+              <th scope="col">Framework</th>
+              <th scope="col">Estado</th>
+              <th scope="col">URL</th>
+              <th scope="col">Creado</th>
+              <th scope="col"><span class="sr-only">Acciones</span></th>
+            </tr>
+          </thead>
+          <tbody id="projects-list"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p><strong>Despliegue Kevin</strong> • Registro de proyectos</p>
+    </div>
+  </footer>
+
+  <script src="Scripts.Js"></script>
+  <script src="Projects.Js"></script>
+</body>
+</html>

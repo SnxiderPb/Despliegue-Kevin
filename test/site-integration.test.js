@@ -9,7 +9,8 @@ const pages = [
   "Basico.Html",
   "Ramas.Html",
   "Frameworks.Html",
-  "Dominios.Html"
+  "Dominios.Html",
+  "Proyectos.Html"
 ];
 
 test("all local page, stylesheet, and script links resolve with exact casing", () => {

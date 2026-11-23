@@ -1,4 +1,4 @@
-name: Pruebas
+name: CI - Pruebas unitarias e integración
 
 on:
   push:
@@ -7,14 +7,41 @@ on:
 
 jobs:
   test:
-    name: Pruebas unitarias e integración
+    name: Pruebas unitarias e integración con PostgreSQL
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: despliegue_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d despliegue_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: despliegue_test
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_SSL: "false"
     steps:
       - name: Descargar código
         uses: actions/checkout@v4
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - name: Ejecutar pruebas
+          node-version: 22
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Ejecutar pruebas unitarias e integración
         run: npm test
+      - name: Construir sitio estático para Vercel
+        run: npm run build
+      - name: Construir imagen Docker
+        run: docker build --tag despliegue-kevin:ci .
