@@ -64,7 +64,8 @@ del servidor no se publican desde Vercel.
 
 1. Importa el repositorio en Vercel.
 2. Usa **Framework Preset: Other**, **Build Command: `npm run build`** y
-   **Output Directory: `dist`**. Configura Node.js 22 para el build.
+   **Output Directory: `dist`** (también declarado en `vercel.json`). Configura
+   Node.js 22 para el build.
 3. Antes de usar el CRUD en producción, reemplaza en `vercel.json`
    `api.REEMPLAZAR-POR-TU-DOMINIO.com` por un dominio API tuyo que apunte al
    balanceador y tenga un certificado HTTPS válido. La regla `/api/*` pasa las
