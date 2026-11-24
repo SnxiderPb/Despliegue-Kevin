@@ -93,58 +93,76 @@ del servidor no se publican desde Vercel.
 2. Usa **Framework Preset: Other**, **Build Command: `npm run build`** y
    **Output Directory: `dist`** (también declarado en `vercel.json`). Configura
    Node.js 22 para el build.
-3. Antes de usar el CRUD en producción, reemplaza en `vercel.json`
-   `api.REEMPLAZAR-POR-TU-DOMINIO.com` por un dominio API tuyo que apunte al
-   balanceador y tenga un certificado HTTPS válido. La regla `/api/*` pasa las
-   llamadas del navegador al backend y mantiene la sesión en el mismo origen.
-   Sin un backend público con HTTPS, el registro y el inicio de sesión desde
-   Vercel no funcionarán. El Docker de tu computador no es accesible desde
-   Vercel ni desde el navegador del instructor.
+3. Antes de usar el CRUD, configura en `vercel.json` el destino HTTPS del
+   backend. Para la demo temporal de AWS, usa la URL `trycloudflare.com`
+   generada por el túnel descrito abajo; para un despliegue permanente, usa un
+   dominio API estable con HTTPS. La regla `/api/*` mantiene las llamadas y la
+   sesión en el mismo origen de Vercel. Sin un backend público con HTTPS, el
+   registro y el inicio de sesión no funcionarán. El Docker de tu computador
+   no es accesible desde Vercel ni desde el navegador del instructor.
 
-## Preparar el backend en AWS
+## Demo temporal en AWS EC2 con Docker
 
-Esta guía no crea recursos en tu cuenta. ECS, el balanceador y RDS pueden
-generar cargos; revisa precios y confirma cada recurso antes de crearlo.
+Esta alternativa mantiene la API y PostgreSQL en contenedores Docker en una
+instancia EC2. El túnel de Cloudflare entrega una URL HTTPS temporal para que
+Vercel pueda enviar las solicitudes. No es un despliegue de producción: la URL
+cambia al reiniciar el túnel y cualquier persona que la conozca puede abrirla.
 
-1. **RDS:** crea PostgreSQL 16 en subredes privadas. No habilites acceso público.
-   Conserva el endpoint, nombre de base de datos y usuario.
-2. **ECR:** configura AWS CLI con tu perfil/SSO y crea un repositorio de
-   imágenes. Sustituye `REGION` y `ACCOUNT_ID` por los valores de tu cuenta:
+AWS ofrece créditos a cuentas elegibles, pero no garantiza alojamiento gratis
+permanente. Revisa el saldo y la fecha de vencimiento antes de crear recursos;
+detén la instancia cuando no estés presentando. La instancia y el almacenamiento
+pueden consumir créditos. No ingreses datos personales o reales en la demo.
+
+1. En AWS, selecciona una región disponible (por ejemplo, `us-east-2`) y crea
+   una instancia EC2 pequeña elegible para tu cuenta. Usa Ubuntu 24.04 LTS.
+   En su grupo de seguridad permite SSH (`22`) solo desde **My IP**. No abras
+   `3000`, `5432`, `80` ni `443`: Cloudflare establece el túnel desde la
+   instancia hacia afuera.
+2. Conéctate por SSH e instala Docker, Compose y Git:
 
    ```bash
-   aws ecr create-repository --repository-name despliegue-kevin --region REGION
-   aws ecr get-login-password --region REGION | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com
-   docker build -t despliegue-kevin .
-   docker tag despliegue-kevin:latest ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/despliegue-kevin:latest
-   docker push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/despliegue-kevin:latest
+   sudo apt update
+   sudo apt install -y docker.io docker-compose-v2 git
+   sudo systemctl enable --now docker
    ```
 
-   Si usas un perfil AWS con SSO, inicia sesión con `aws sso login --profile
-   TU_PERFIL` y añade `--profile TU_PERFIL` a los comandos `aws`.
-3. **Red y HTTPS:** crea un Application Load Balancer y un servicio ECS Fargate
-   en la misma VPC que RDS. Para el listener HTTPS, solicita en ACM un
-   certificado válido para un dominio API que controles (por ejemplo,
-   `api.tudominio.com`) y crea un registro DNS que apunte al balanceador. Usa
-   ese dominio API en `vercel.json`, no el hostname `*.elb.amazonaws.com`.
-   Configura el health check como `/api/health` en el puerto `3000` y el grupo
-   de logs de CloudWatch para el task.
-4. **Reglas de red:** permite entrada HTTPS al balanceador; permite al task de
-   ECS recibir tráfico del balanceador en `3000`; permite a RDS recibir
-   conexiones `5432` solo desde el grupo de seguridad de ECS. Los tasks en
-   subredes privadas necesitan NAT o endpoints VPC para descargar la imagen de
-   ECR y consultar Secrets Manager/CloudWatch.
-5. **Secretos:** guarda `DB_PASSWORD`, `JWT_SECRET` y `ADMIN_PASSWORD` en AWS
-   Secrets Manager y referencia esos secretos en la definición de tarea de ECS.
-   No los incluyas en Git, en la imagen ni en comandos compartidos.
-6. **Entorno del task:** configura `NODE_ENV=production`, `PORT=3000`,
-   `DB_HOST` (endpoint RDS), `DB_PORT=5432`, `DB_NAME`, `DB_USER`, `DB_SSL=true`,
-   `DB_SSL_CA_PATH=/app/rds-global-bundle.pem`, `ADMIN_EMAIL` y los secretos.
-   La imagen descarga el bundle oficial de certificados de Amazon RDS y la
-   conexión TLS verifica el certificado.
-7. Espera a que ECS marque el servicio como saludable. Confirma que el dominio
-   API HTTPS responde y vuelve a desplegar el frontend en Vercel.
+   Clona el repositorio y crea tu archivo local de variables:
 
-Al arrancar, el backend crea las tablas y el usuario administrador si todavía
-no existe. Cambiar `ADMIN_PASSWORD` en Secrets Manager no cambia la contraseña
-de una cuenta que ya existe; actualízala iniciando sesión y usando la opción de
-cambiar contraseña.
+   ```bash
+   git clone https://github.com/SnxiderPb/Despliegue-Kevin.git
+   cd Despliegue-Kevin
+   cp .env.example .env
+   nano .env
+   ```
+
+   Pon valores secretos nuevos para `DB_PASSWORD`, `JWT_SECRET` y
+   `ADMIN_PASSWORD`. Usa `ADMIN_EMAIL` para la primera cuenta administradora.
+   No copies las claves del equipo local ni compartas el contenido de `.env`.
+3. Inicia los servicios:
+
+   ```bash
+   sudo docker compose -f docker-compose.aws-demo.yml up -d --build
+   sudo docker compose -f docker-compose.aws-demo.yml ps
+   ```
+
+   La configuración no publica los puertos de la API ni de PostgreSQL en la
+   instancia; solo los servicios de la red privada de Docker pueden acceder.
+4. Obtén la URL temporal del túnel:
+
+   ```bash
+   sudo docker compose -f docker-compose.aws-demo.yml logs -f tunnel
+   ```
+
+   Copia la URL `https://....trycloudflare.com` que muestra el log. El túnel
+   debe seguir ejecutándose mientras el instructor prueba la aplicación. La
+   URL puede cambiar si el túnel se reinicia.
+5. En `vercel.json`, cambia el destino `/api/*` por
+   `https://TU-URL.trycloudflare.com/api/:path*`. Sube ese cambio a GitHub para
+   que Vercel despliegue la nueva configuración. Comprueba
+   `https://TU-URL.trycloudflare.com/api/health` y después prueba el registro
+   desde el frontend de Vercel.
+
+Los datos quedan en el volumen Docker de la instancia. Detenerla conserva ese
+volumen, pero terminarla puede borrar el disco y los datos. Tras la presentación,
+detén o elimina los recursos de AWS que ya no necesites y guarda una copia de
+la base si deseas conservar los registros.

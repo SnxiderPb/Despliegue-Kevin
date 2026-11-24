@@ -1,0 +1,47 @@
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${DB_NAME:-despliegue}
+      POSTGRES_USER: ${DB_USER:-despliegue}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-despliegue} -d ${DB_NAME:-despliegue}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    build: .
+    environment:
+      PORT: 3000
+      NODE_ENV: production
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-despliegue}
+      DB_USER: ${DB_USER:-despliegue}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+      DB_SSL: "false"
+      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET in .env}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:?Define ADMIN_EMAIL in .env}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Define ADMIN_PASSWORD in .env}
+    expose:
+      - "3000"
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://app:3000
+    depends_on:
+      app:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

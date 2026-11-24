@@ -43,5 +43,7 @@ jobs:
         run: npm test
       - name: Construir sitio estático para Vercel
         run: npm run build
+      - name: Validar Compose para demo en AWS
+        run: docker compose --env-file .env.example --file docker-compose.aws-demo.yml config --quiet
       - name: Construir imagen Docker
         run: docker build --tag despliegue-kevin:ci .
