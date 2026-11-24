@@ -12,15 +12,24 @@ Node.js/Express y PostgreSQL.
 
 ## Ejecutar localmente con Docker
 
-En PowerShell, desde la raíz del proyecto:
+Abre Docker Desktop. En PowerShell, desde la raíz del proyecto:
 
 ```powershell
-Copy-Item .env.example .env
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+notepad .env
 ```
 
-Edita `.env` y reemplaza la contraseña de administrador, la contraseña local de
-PostgreSQL y `JWT_SECRET`. La contraseña de administrador debe tener al menos
-12 caracteres; el secreto JWT, al menos 32. No subas `.env` a GitHub.
+En `.env`, reemplaza los valores de ejemplo por valores privados:
+
+- `ADMIN_EMAIL`: correo para la cuenta administradora inicial.
+- `ADMIN_PASSWORD`: contraseña inicial del administrador, al menos 12 caracteres.
+- `DB_PASSWORD`: contraseña local de PostgreSQL, distinta de la anterior.
+- `JWT_SECRET`: cadena aleatoria de al menos 32 caracteres.
+
+El valor `change-this-admin-password` es solo un ejemplo público: cámbialo antes
+de iniciar el sistema. No pegues aquí tus claves ni subas `.env` a GitHub.
+`ADMIN_EMAIL` y `ADMIN_PASSWORD` solo crean la cuenta administradora la primera
+vez; luego administra la contraseña desde la pantalla de cuenta.
 
 Levanta la aplicación y la base de datos:
 
@@ -28,9 +37,26 @@ Levanta la aplicación y la base de datos:
 docker compose up --build
 ```
 
-Abre `http://localhost:3000/Proyectos.Html` e inicia sesión con `ADMIN_EMAIL` y
-`ADMIN_PASSWORD` de `.env`. La aplicación crea las tablas y el administrador al
-iniciarse. Los datos de PostgreSQL persisten en un volumen de Docker.
+Abre `http://localhost:3000/Proyectos.Html`. Puedes crear una cuenta pública,
+pero esta recibe el rol **Usuario** y solo ve sus propios proyectos. Inicia
+sesión con `ADMIN_EMAIL` y `ADMIN_PASSWORD` de `.env` para administrar cuentas.
+El administrador inicial no se puede borrar, desactivar ni degradar desde la
+API. El sistema crea las tablas al arrancar; los datos persisten en un volumen
+de Docker. Borrar un usuario también borra sus proyectos.
+
+La API ofrece:
+
+- `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/logout`,
+  `GET /api/auth/me` y `POST /api/auth/change-password`.
+- `GET/POST /api/projects` y `PUT/DELETE /api/projects/:id`; cada usuario solo
+  puede operar sobre sus proyectos.
+- Administración protegida por rol: `GET/POST /api/users` y
+  `PUT/DELETE /api/users/:id`.
+- `GET /api/health` para comprobar el backend y PostgreSQL.
+
+Las contraseñas se guardan con hash bcrypt; las sesiones son cookies HTTP-only,
+SameSite Strict, con expiración y revocación al cambiar contraseña o desactivar
+una cuenta. El inicio de sesión y el registro están limitados por IP.
 
 ## Pruebas y pipeline
 
@@ -43,13 +69,14 @@ En GitHub, cada push y Pull Request ejecuta estos pasos; los nombres de cada
 prueba y su resultado aparecen en el paso **Ejecutar pruebas unitarias e
 integración**. [Ver ejecuciones](https://github.com/SnxiderPb/Despliegue-Kevin/actions).
 
-Para ejecutarlas localmente:
+Para ejecutar las pruebas unitarias e integración localmente (Node.js 22+):
 
 ```powershell
 npm install
 docker compose --profile test up -d test-database
 $env:DB_PORT = "5433"
 npm test
+if ($LASTEXITCODE -ne 0) { throw "Fallaron las pruebas." }
 Remove-Item Env:DB_PORT
 docker compose --profile test stop test-database
 ```
@@ -70,6 +97,9 @@ del servidor no se publican desde Vercel.
    `api.REEMPLAZAR-POR-TU-DOMINIO.com` por un dominio API tuyo que apunte al
    balanceador y tenga un certificado HTTPS válido. La regla `/api/*` pasa las
    llamadas del navegador al backend y mantiene la sesión en el mismo origen.
+   Sin un backend público con HTTPS, el registro y el inicio de sesión desde
+   Vercel no funcionarán. El Docker de tu computador no es accesible desde
+   Vercel ni desde el navegador del instructor.
 
 ## Preparar el backend en AWS
 
@@ -114,6 +144,7 @@ generar cargos; revisa precios y confirma cada recurso antes de crearlo.
 7. Espera a que ECS marque el servicio como saludable. Confirma que el dominio
    API HTTPS responde y vuelve a desplegar el frontend en Vercel.
 
-Al arrancar, el backend crea las tablas y el usuario administrador a partir de
-los secretos configurados. Cambiar `ADMIN_PASSWORD` en Secrets Manager cambia
-la contraseña del administrador cuando se reinicia la aplicación.
+Al arrancar, el backend crea las tablas y el usuario administrador si todavía
+no existe. Cambiar `ADMIN_PASSWORD` en Secrets Manager no cambia la contraseña
+de una cuenta que ya existe; actualízala iniciando sesión y usando la opción de
+cambiar contraseña.

@@ -38,4 +38,29 @@ async function initializeDatabase(pool) {
   await pool.query(schema);
 }
 
-module.exports = { createPool, initializeDatabase };
+async function ensureBootstrapAdmin(pool, { email, passwordHash }) {
+  const result = await pool.query(
+    `INSERT INTO users (full_name, email, password_hash, role)
+     VALUES ($1, $2, $3, 'admin')
+     ON CONFLICT (email) DO UPDATE
+       SET role = 'admin', updated_at = NOW()
+     RETURNING id, email, role, is_active, session_version`,
+    [email.split("@")[0], email, passwordHash]
+  );
+  return result.rows[0];
+}
+
+async function migrateProjectOwners(pool, bootstrapAdminId) {
+  await pool.query(
+    "UPDATE projects SET owner_id = $1 WHERE owner_id IS NULL",
+    [bootstrapAdminId]
+  );
+  await pool.query("ALTER TABLE projects ALTER COLUMN owner_id SET NOT NULL");
+}
+
+module.exports = {
+  createPool,
+  ensureBootstrapAdmin,
+  initializeDatabase,
+  migrateProjectOwners
+};

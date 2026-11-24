@@ -784,6 +784,72 @@ pre code {
   outline-offset: 2px;
 }
 
+.project-form[hidden],
+.users-panel[hidden] {
+  display: none;
+}
+
+.auth-switch,
+.dashboard-tabs {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.auth-tab {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 14px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.auth-tab:hover,
+.auth-tab.active {
+  color: #ffffff;
+  background-color: var(--primary);
+}
+
+.auth-tab:focus-visible,
+.password-toggle:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.password-input {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.password-input input {
+  padding-right: 88px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  padding: 6px 8px;
+  color: #93c5fd;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.project-form small {
+  color: var(--text-muted);
+}
+
 .project-form button:disabled,
 .project-actions button:disabled {
   cursor: wait;
@@ -829,6 +895,62 @@ pre code {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+}
+
+.projects-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.projects-heading.section-heading {
+  margin: 24px 0 8px;
+}
+
+.role-badge {
+  display: inline-flex;
+  margin-top: 8px;
+  padding: 3px 10px;
+  color: #bfdbfe;
+  background-color: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.role-badge.is-admin {
+  color: #fde68a;
+  background-color: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.password-panel {
+  margin-top: 22px;
+  padding: 14px 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.password-panel summary {
+  width: fit-content;
+  color: #93c5fd;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.password-form {
+  max-width: 520px;
+  margin-top: 16px;
+}
+
+.users-panel {
+  margin-top: 20px;
+}
+
+.users-panel .project-form {
+  margin-bottom: 28px;
 }
 
 .projects-heading p,
@@ -961,5 +1083,14 @@ pre code {
   .projects-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .auth-tab {
+    flex: 1;
+    padding: 9px 8px;
+  }
+
+  .projects-heading-actions {
+    width: 100%;
   }
 }

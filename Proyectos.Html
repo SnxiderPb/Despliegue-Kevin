@@ -29,14 +29,35 @@
     </section>
 
     <section id="auth-panel" class="content-panel auth-panel" aria-labelledby="login-title">
-      <h2 id="login-title">Iniciar sesión</h2>
-      <p>Usa el correo y la contraseña de administrador configurados en el servidor.</p>
+      <div class="auth-switch" role="tablist" aria-label="Acceso a la cuenta">
+        <button id="show-login" class="auth-tab active" type="button" role="tab" aria-selected="true">Iniciar sesión</button>
+        <button id="show-register" class="auth-tab" type="button" role="tab" aria-selected="false">Crear cuenta</button>
+      </div>
+      <h2 id="login-title">Bienvenido de nuevo</h2>
+      <p id="auth-description">Ingresa con tu correo y contraseña para administrar tus proyectos.</p>
       <form id="login-form" class="project-form">
         <label for="login-email">Correo</label>
-        <input id="login-email" name="email" type="email" autocomplete="username" required>
+        <input id="login-email" name="email" type="email" autocomplete="username" maxlength="254" required>
         <label for="login-password">Contraseña</label>
-        <input id="login-password" name="password" type="password" autocomplete="current-password" required>
-        <button class="btn-primary" type="submit">Entrar</button>
+        <div class="password-input">
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required>
+          <button class="password-toggle" type="button" data-password-toggle="login-password" aria-label="Mostrar contraseña">Mostrar</button>
+        </div>
+        <button class="btn-primary" type="submit">Iniciar sesión</button>
+      </form>
+
+      <form id="register-form" class="project-form" hidden>
+        <label for="register-name">Nombre</label>
+        <input id="register-name" name="fullName" autocomplete="name" maxlength="100" required>
+        <label for="register-email">Correo</label>
+        <input id="register-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+        <label for="register-password">Contraseña</label>
+        <div class="password-input">
+          <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="72" required>
+          <button class="password-toggle" type="button" data-password-toggle="register-password" aria-label="Mostrar contraseña">Mostrar</button>
+        </div>
+        <small>Usa al menos 12 caracteres. Nunca compartas tu contraseña.</small>
+        <button class="btn-primary" type="submit">Crear cuenta</button>
       </form>
     </section>
 
@@ -45,48 +66,127 @@
     <section id="projects-dashboard" class="content-panel projects-dashboard" aria-labelledby="projects-title" hidden>
       <div class="projects-heading">
         <div>
-          <h2 id="projects-title">Registros de proyectos</h2>
-          <p><span id="project-count">0</span> proyectos guardados</p>
+          <h2 id="projects-title">Hola, <span id="account-name">usuario</span></h2>
+          <p id="account-email"></p>
+          <span id="account-role" class="role-badge"></span>
         </div>
-        <button id="logout-button" class="btn-secondary" type="button">Cerrar sesión</button>
+        <div class="projects-heading-actions">
+          <button id="logout-button" class="btn-secondary" type="button">Cerrar sesión</button>
+        </div>
       </div>
 
-      <form id="project-form" class="project-form project-form-grid">
-        <input id="project-id" name="id" type="hidden">
-        <label for="project-name">Nombre del proyecto</label>
-        <input id="project-name" name="name" maxlength="120" required>
-        <label for="project-framework">Framework o tecnología</label>
-        <input id="project-framework" name="framework" maxlength="80" placeholder="Ej. HTML/CSS/JS, React o Vite" required>
-        <label for="project-url">URL publicada (opcional)</label>
-        <input id="project-url" name="url" type="url" maxlength="2048" placeholder="https://ejemplo.com">
-        <label for="project-status">Estado</label>
-        <select id="project-status" name="status" required>
-          <option value="planned">Planeado</option>
-          <option value="in_progress">En progreso</option>
-          <option value="deployed">Publicado</option>
-        </select>
-        <div class="project-form-actions">
-          <button id="save-project" class="btn-primary" type="submit">Guardar proyecto</button>
-          <button id="cancel-edit" class="btn-secondary" type="button" hidden>Cancelar edición</button>
-        </div>
-      </form>
-
-      <p id="empty-projects" class="empty-projects" hidden>Aún no hay registros. Crea tu primer proyecto con el formulario.</p>
-      <div class="table-wrapper">
-        <table class="projects-table">
-          <thead>
-            <tr>
-              <th scope="col">Proyecto</th>
-              <th scope="col">Framework</th>
-              <th scope="col">Estado</th>
-              <th scope="col">URL</th>
-              <th scope="col">Creado</th>
-              <th scope="col"><span class="sr-only">Acciones</span></th>
-            </tr>
-          </thead>
-          <tbody id="projects-list"></tbody>
-        </table>
+      <div class="dashboard-tabs" role="tablist" aria-label="Administración">
+        <button id="show-projects" class="auth-tab active" type="button" role="tab" aria-selected="true">Mis proyectos</button>
+        <button id="show-users" class="auth-tab" type="button" role="tab" aria-selected="false" hidden>Usuarios</button>
       </div>
+
+      <details class="password-panel">
+        <summary>Cambiar mi contraseña</summary>
+        <form id="password-form" class="project-form password-form">
+          <label for="current-password">Contraseña actual</label>
+          <input id="current-password" name="currentPassword" type="password" autocomplete="current-password" required>
+          <label for="new-password">Nueva contraseña</label>
+          <input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="12" maxlength="72" required>
+          <small>Mínimo 12 caracteres; al cambiarla se cierran las demás sesiones.</small>
+          <button class="btn-primary" type="submit">Actualizar contraseña</button>
+        </form>
+      </details>
+
+      <section id="projects-panel" aria-labelledby="projects-panel-title">
+        <div class="projects-heading section-heading">
+          <div>
+            <h2 id="projects-panel-title">Mis proyectos</h2>
+            <p><span id="project-count">0</span> proyectos guardados</p>
+          </div>
+        </div>
+
+        <form id="project-form" class="project-form project-form-grid">
+          <input id="project-id" name="id" type="hidden">
+          <label for="project-name">Nombre del proyecto</label>
+          <input id="project-name" name="name" maxlength="120" required>
+          <label for="project-framework">Framework o tecnología</label>
+          <input id="project-framework" name="framework" maxlength="80" placeholder="Ej. HTML/CSS/JS, React o Vite" required>
+          <label for="project-url">URL publicada (opcional)</label>
+          <input id="project-url" name="url" type="url" maxlength="2048" placeholder="https://ejemplo.com">
+          <label for="project-status">Estado</label>
+          <select id="project-status" name="status" required>
+            <option value="planned">Planeado</option>
+            <option value="in_progress">En progreso</option>
+            <option value="deployed">Publicado</option>
+          </select>
+          <div class="project-form-actions">
+            <button id="save-project" class="btn-primary" type="submit">Guardar proyecto</button>
+            <button id="cancel-edit" class="btn-secondary" type="button" hidden>Cancelar edición</button>
+          </div>
+        </form>
+
+        <p id="empty-projects" class="empty-projects" hidden>Aún no hay registros. Crea tu primer proyecto con el formulario.</p>
+        <div class="table-wrapper">
+          <table class="projects-table">
+            <thead>
+              <tr>
+                <th scope="col">Proyecto</th>
+                <th scope="col">Framework</th>
+                <th scope="col">Estado</th>
+                <th scope="col">URL</th>
+                <th scope="col">Creado</th>
+                <th scope="col"><span class="sr-only">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody id="projects-list"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="users-panel" class="users-panel" aria-labelledby="users-title" hidden>
+        <div class="projects-heading section-heading">
+          <div>
+            <h2 id="users-title">Administrar usuarios</h2>
+            <p>Crea cuentas, cambia roles, actualiza datos o desactiva y elimina usuarios.</p>
+          </div>
+        </div>
+
+        <form id="user-form" class="project-form project-form-grid">
+          <input id="user-id" name="id" type="hidden">
+          <label for="user-name">Nombre</label>
+          <input id="user-name" name="fullName" maxlength="100" required>
+          <label for="user-email">Correo</label>
+          <input id="user-email" name="email" type="email" maxlength="254" required>
+          <label for="user-password">Contraseña <span id="user-password-hint">(obligatoria al crear)</span></label>
+          <input id="user-password" name="password" type="password" minlength="12" maxlength="72" autocomplete="new-password">
+          <label for="user-role">Rol</label>
+          <select id="user-role" name="role" required>
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+          <label for="user-active">Estado de cuenta</label>
+          <select id="user-active" name="isActive" required>
+            <option value="true">Activa</option>
+            <option value="false">Inactiva</option>
+          </select>
+          <div class="project-form-actions">
+            <button id="save-user" class="btn-primary" type="submit">Crear usuario</button>
+            <button id="cancel-user-edit" class="btn-secondary" type="button" hidden>Cancelar</button>
+          </div>
+        </form>
+
+        <p id="empty-users" class="empty-projects" hidden>No hay otras cuentas registradas.</p>
+        <div class="table-wrapper">
+          <table class="projects-table">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Correo</th>
+                <th scope="col">Rol</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Registro</th>
+                <th scope="col"><span class="sr-only">Acciones</span></th>
+              </tr>
+            </thead>
+            <tbody id="users-list"></tbody>
+          </table>
+        </div>
+      </section>
     </section>
   </main>
 

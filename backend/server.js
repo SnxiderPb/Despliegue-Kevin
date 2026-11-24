@@ -2,7 +2,12 @@ require("dotenv").config();
 
 const bcrypt = require("bcryptjs");
 const { createApp } = require("./app");
-const { createPool, initializeDatabase } = require("./database");
+const {
+  createPool,
+  ensureBootstrapAdmin,
+  initializeDatabase,
+  migrateProjectOwners
+} = require("./database");
 
 function readConfig(env = process.env) {
   const required = ["JWT_SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD"];
@@ -17,9 +22,13 @@ function readConfig(env = process.env) {
   if (env.ADMIN_PASSWORD.length < 12) {
     throw new Error("ADMIN_PASSWORD debe tener al menos 12 caracteres.");
   }
+  const adminEmail = env.ADMIN_EMAIL.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminEmail) || adminEmail.length > 254) {
+    throw new Error("ADMIN_EMAIL debe ser un correo válido.");
+  }
 
   return {
-    adminEmail: env.ADMIN_EMAIL.trim().toLowerCase(),
+    adminEmail,
     adminPassword: env.ADMIN_PASSWORD,
     jwtSecret: env.JWT_SECRET,
     nodeEnv: env.NODE_ENV || "development",
@@ -33,17 +42,17 @@ async function start() {
   await initializeDatabase(pool);
 
   const passwordHash = await bcrypt.hash(config.adminPassword, 12);
-  await pool.query(
-    `INSERT INTO users (email, password_hash)
-     VALUES ($1, $2)
-     ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash`,
-    [config.adminEmail, passwordHash]
-  );
+  const admin = await ensureBootstrapAdmin(pool, {
+    email: config.adminEmail,
+    passwordHash
+  });
+  await migrateProjectOwners(pool, admin.id);
 
   const app = createApp({
     pool,
     jwtSecret: config.jwtSecret,
-    nodeEnv: config.nodeEnv
+    nodeEnv: config.nodeEnv,
+    bootstrapAdminEmail: config.adminEmail
   });
   const server = app.listen(config.port, "0.0.0.0", () => {
     console.log(`Aplicación disponible en el puerto ${config.port}.`);
